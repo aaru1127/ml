@@ -1,0 +1,40 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split as split
+from sklearn.tree import DecisionTreeClassifier as DT,plot_tree
+from sklearn.metrics import accuracy_score as acc, classification_report as rep
+
+def load():
+  d=load_breast_cancer()
+  return d.data,d.target,d.feature_names,d.target_names
+
+def train(Xt,yt):
+  m=DT(random_state=42)
+  return m.fit(Xt,yt)
+
+def plot(m,f):
+  plt.figure(figsize=(10,8))
+  plot_tree(m,filled=True,feature_names=f,class_names=['Malignant','Benign'],rounded=True,proportion=True)
+  plt.title("all tree adtaa")
+  plt.show()
+
+def pred(m,s):
+  return m.predict(np.array(s).reshape(1,-1))
+
+def main():
+  X,y,f,t=load()
+  Xt,Xs,yt,ys=split(X,y,test_size=0.2,random_state=42)
+
+  m=train(Xt,yt)
+  yp=m.predict(Xs)
+
+  print("accuracy data",acc(ys,yp))
+  print("classifierb data")
+  print(rep(ys,yp,target_names=t))
+
+  plot(m,f)
+  p=pred(m,Xs[0])
+  print(f"the data are {'Benign'if p[0]==1 else 'Malignent'}")
+
+main()
